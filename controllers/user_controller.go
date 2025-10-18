@@ -15,6 +15,7 @@ func NewUserController(s services.UserService) *UserController {
 	return &UserController{service: s}
 }
 
+// c: controller
 func (c *UserController) Register(ctx *fiber.Ctx) error {
 	user := new(models.User)
 

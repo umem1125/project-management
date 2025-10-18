@@ -22,6 +22,7 @@ func NewUserService(repo repositories.UserRepository) UserService {
 	return &userService{}
 }
 
+// s: service
 func (s *userService)Register(user *models.User) error {
 	// cek email sudah tercaftar atau belum
 	// hashing password

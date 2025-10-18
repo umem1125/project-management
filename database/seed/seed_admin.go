@@ -3,6 +3,7 @@ package seed
 import (
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/umem1125/project-management/config"
 	"github.com/umem1125/project-management/models"
 	"github.com/umem1125/project-management/utils"
@@ -16,6 +17,7 @@ func SeedAdmin() {
 		Email: "admin@example.com",
 		Password: password,
 		Role: "admin",
+		PublicID: uuid.New(),
 	}
 	if err := config.DB.FirstOrCreate(&admin,models.User{Email: admin.Email}).Error; err != nil {
 		log.Println("Failed to seed admin", err)

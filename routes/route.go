@@ -15,4 +15,5 @@ func Setup(app *fiber.App, uc *controllers.UserController) {
 		log.Fatal("Error loading .ev file")
 	}
 	app.Post("/v1/auth/register", uc.Register)
+	app.Post("/v1/auth/login", uc.Login)
 }

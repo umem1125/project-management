@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"math"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
 	"github.com/umem1125/project-management/models"
@@ -72,4 +75,36 @@ func (c *UserController) GetUser(ctx *fiber.Ctx) error {
 		return utils.BadRequest(ctx, "error bad request: internal server error", err.Error())
 	}
 	return utils.Success(ctx, "data berhasil ditemukan", userResp)
+}
+
+func (c *UserController) GetUserPagination(ctx *fiber.Ctx) error {
+	page, _ := strconv.Atoi(ctx.Query("page", "1"))
+	limit, _ := strconv.Atoi(ctx.Query("limit", "10"))
+	ofset := (page - 1) * limit
+
+	filter := ctx.Query("filter", "")
+	sort := ctx.Query("sort", "")
+
+	users, total, err := c.service.GetAllPagination(filter, sort, limit, ofset)
+	if err != nil {
+		return utils.BadRequest(ctx, "gagal mengambil data", err.Error())
+	}
+
+	var userResp []models.UserResponse
+	_ = copier.Copy(&userResp, &users)
+
+	meta := utils.PaginationMeta{
+		Page:      page,
+		Limit:     limit,
+		Total:     int(total),
+		TotalPage: int(math.Ceil(float64(total) / float64(limit))),
+		Filter:    filter,
+		Sort:      sort,
+	}
+
+	if total == 0 {
+		return utils.NotFoundPagination(ctx, "data not found", userResp, meta)
+	}
+
+	return utils.SuccessPagination(ctx, "success get pagination data", userResp, meta)
 }

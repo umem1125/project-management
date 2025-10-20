@@ -1,0 +1,2 @@
+ALTER TABLE boards 
+DROP COLUMN IF EXISTs due_date
